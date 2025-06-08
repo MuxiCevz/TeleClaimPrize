@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Secret Reward Access</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0088cc 0%, #229ed9 50%, #40a7e3 100%);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #222;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Telegram-стиль фон с плавающими элементами */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(64, 167, 227, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(34, 158, 217, 0.15) 0%, transparent 50%);
+      animation: telegramFloat 8s ease-in-out infinite;
+      z-index: -1;
+    }
+
+    @keyframes telegramFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(0.5deg); }
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.98);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 
+        0 20px 40px rgba(0, 136, 204, 0.15),
+        0 8px 16px rgba(0, 136, 204, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.8);
+      width: 100%;
+      max-width: none;
+      min-height: calc(100vh - 40px);
+      text-align: center;
+      position: relative;
+      border: 1px solid rgba(0, 136, 204, 0.1);
+      animation: slideInTelegram 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @keyframes slideInTelegram {
+      from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .telegram-accent {
+      position: absolute;
+      top: -2px;
+      left: -2px;
+      right: -2px;
+      bottom: -2px;
+      background: linear-gradient(45deg, #0088cc, #229ed9, #40a7e3, #0088cc);
+      border-radius: 22px;
+      z-index: -1;
+      opacity: 0;
+      animation: telegramGlow 4s ease-in-out infinite;
+    }
+
+    @keyframes telegramGlow {
+      0%, 100% { opacity: 0; }
+      50% { opacity: 0.3; }
+    }
+
+    h1 {
+      color: #0088cc;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      text-shadow: 0 2px 4px rgba(0, 136, 204, 0.1);
+      animation: telegramPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes telegramPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+
+    .subtitle {
+      color: #6d7885;
+      font-size: 16px;
+      margin-bottom: 30px;
+      font-weight: 500;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.2s forwards;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .message {
+      text-align: left;
+      line-height: 1.6;
+      opacity: 0;
+      animation: fadeInUp 0.8s ease-out 0.4s forwards;
+    }
+
+    .message p {
+      margin-bottom: 16px;
+      color: #222;
+    }
+
+    .bonus-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .bonus-item {
+      background: linear-gradient(135deg, rgba(0, 136, 204, 0.05) 0%, rgba(64, 167, 227, 0.05) 100%);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid rgba(0, 136, 204, 0.15);
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .bonus-item::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(0, 136, 204, 0.1), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .bonus-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(0, 136, 204, 0.2);
+      border-color: rgba(0, 136, 204, 0.3);
+      background: linear-gradient(135deg, rgba(0, 136, 204, 0.08) 0%, rgba(64, 167, 227, 0.08) 100%);
+    }
+
+    .bonus-item:hover::before {
+      left: 100%;
+    }
+
+    .bonus-icon {
+      font-size: 20px;
+      margin-right: 8px;
+      filter: drop-shadow(0 1px 2px rgba(0, 136, 204, 0.2));
+    }
+
+    .bonus-text {
+      color: #0088cc;
+      font-weight: 600;
+    }
+
+    .bonus-description {
+      color: #6d7885;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .access-code {
+      background: linear-gradient(135deg, #0088cc 0%, #229ed9 100%);
+      color: white;
+      padding: 24px;
+      border-radius: 16px;
+      margin: 24px 0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+    }
+
+    .access-code::before {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: -50%;
+      width: 20%;
+      height: calc(100% + 4px);
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+      animation: telegramShine 3s linear infinite;
+      transform: skewX(-20deg);
+    }
+
+    @keyframes telegramShine {
+      0% { left: -50%; }
+      100% { left: 150%; }
+    }
+
+    .code-label {
+      font-size: 14px;
+      margin-bottom: 8px;
+      opacity: 0.9;
+      font-weight: 500;
+    }
+
+    .code-text {
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Consolas', monospace;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .telegram-btn {
+      background: linear-gradient(135deg, #0088cc 0%, #229ed9 100%);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+      position: relative;
+      overflow: hidden;
+      margin-top: 24px;
+      min-width: 180px;
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+    }
+
+    .telegram-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .telegram-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(0, 136, 204, 0.4);
+      background: linear-gradient(135deg, #0077bb 0%, #1a8acc 100%);
+    }
+
+    .telegram-btn:hover::before {
+      left: 100%;
+    }
+
+    .telegram-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 8px rgba(0, 136, 204, 0.3);
+    }
+
+    .popup {
+      display: none;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #40a7e3 0%, #0088cc 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 16px;
+      font-weight: 500;
+      position: relative;
+      overflow: hidden;
+      animation: telegramPopIn 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      box-shadow: 0 4px 12px rgba(0, 136, 204, 0.3);
+    }
+
+    @keyframes telegramPopIn {
+      from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+      }
+    }
+
+    .popup::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%, rgba(255, 255, 255, 0.1) 100%);
+      animation: telegramWave 2s ease-in-out infinite;
+    }
+
+    @keyframes telegramWave {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+
+    .popup-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .loading-dots {
+      display: inline-block;
+      margin-left: 4px;
+    }
+
+    .loading-dots::after {
+      content: '';
+      animation: dots 1.2s steps(4, end) infinite;
+    }
+
+    @keyframes dots {
+      0%, 25% { content: ''; }
+      50% { content: '.'; }
+      75% { content: '..'; }
+      100% { content: '...'; }
+    }
+
+    .telegram-particles {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .telegram-particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      background: rgba(0, 136, 204, 0.4);
+      border-radius: 50%;
+      animation: telegramParticleFloat 8s linear infinite;
+    }
+
+    @keyframes telegramParticleFloat {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 1;
+      }
+      90% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-50px) rotate(180deg);
+        opacity: 0;
+      }
+    }
+
+    .info-block {
+      background: rgba(0, 136, 204, 0.05);
+      border: 1px solid rgba(0, 136, 204, 0.1);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 16px 0;
+      position: relative;
+    }
+
+    .info-block::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 3px;
+      background: linear-gradient(to bottom, #0088cc, #229ed9);
+      border-radius: 2px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 30px 24px;
+      }
+      
+      h1 {
+        font-size: 28px;
+      }
+      
+      .bonus-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .code-text {
+        font-size: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="telegram-particles" id="telegram-particles"></div>
+  
+  <div class="container">
+    <div class="telegram-accent"></div>
+    
+    <h1>✈️ Секретная награда для избранных</h1>
+    <p class="subtitle">Эксклюзивная наградная программа • Волна #3</p>
+    
+    <div class="message">
+      <p><strong>🎉 Поздравляем с отбором!</strong><br>
+      Вы стали участником закрытой наградной программы от нашей команды разработчиков.</p>
+      
+      <p><strong>🎁 Ваш персональный пакет наград:</strong></p>
+      
+      <div class="bonus-grid">
+        <div class="bonus-item">
+          <div>
+            <span class="bonus-icon">🚀</span>
+            <span class="bonus-text">X Alpha Early Access</span>
+          </div>
+          <div class="bonus-description">Первый доступ к экспериментальной версии</div>
+        </div>
+        <div class="bonus-item">
+          <div>
+            <span class="bonus-icon">💎</span>
+            <span class="bonus-text">Premium подписка</span>
+          </div>
+          <div class="bonus-description">12 месяцев полного доступа</div>
+        </div>
+        <div class="bonus-item">
+          <div>
+            <span class="bonus-icon">🏆</span>
+            <span class="bonus-text">Invite-Only статус</span>
+          </div>
+          <div class="bonus-description">Эксклюзивный бейдж в профиле</div>
+        </div>
+        <div class="bonus-item">
+          <div>
+            <span class="bonus-icon">🎨</span>
+            <span class="bonus-text">Дизайнерский набор</span>
+          </div>
+          <div class="bonus-description">Премиум стикеры и темы</div>
+        </div>
+        <div class="bonus-item">
+          <div>
+            <span class="bonus-icon">💰</span>
+            <span class="bonus-text">$100 Digital Token</span>
+          </div>
+          <div class="bonus-description">Цифровые активы платформы</div>
+        </div>
+      </div>
+      
+      <div class="access-code">
+        <div class="code-label">🔐 Персональный код активации</div>
+        <div class="code-text">AccessGift</div>
+      </div>
+      
+      <div class="info-block">
+        <p><strong>⚡ Быстрая активация:</strong> Перейдите на <code>system-hub.id/claim</code></p>
+        <p><small>⏰ Код действителен в течение 48 часов</small></p>
+      </div>
+    </div>
+    
+    <button class="telegram-btn" onclick="showPopup()">
+      Получить награды
+    </button>
+    
+    <div class="popup" id="popup">
+      <div class="popup-content">
+        <strong>🔄 Обработка активации<span class="loading-dots"></span></strong>
+        <br><br>Подключение к серверу наград...
+        <br><em>Процесс занимает до 15 минут</em>
+        <br><br>💙 <small>Не закрывайте вкладку до завершения</small>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function showPopup() {
+      document.getElementById("popup").style.display = "block";
+    }
+
+    // Создание Telegram-стиль частиц
+    function createTelegramParticles() {
+      const particlesContainer = document.getElementById('telegram-particles');
+      const particleCount = 12;
+      
+      for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'telegram-particle';
+        particle.style.left = Math.random() * 100 + '%';
+        particle.style.animationDelay = Math.random() * 8 + 's';
+        particle.style.animationDuration = (6 + Math.random() * 4) + 's';
+        particlesContainer.appendChild(particle);
+      }
+    }
+
+    // Инициализация при загрузке
+    window.addEventListener('load', createTelegramParticles);
+
+    // Telegram-стиль интерактивность
+    const container = document.querySelector('.container');
+    container.addEventListener('mouseenter', () => {
+      container.querySelector('.telegram-accent').style.opacity = '1';
+    });
+    
+    container.addEventListener('mouseleave', () => {
+      container.querySelector('.telegram-accent').style.opacity = '0';
+    });
+
+    // Добавляем плавное появление элементов при скролле
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, observerOptions);
+
+    // Наблюдаем за элементами bonus-item
+    document.querySelectorAll('.bonus-item').forEach((item, index) => {
+      item.style.opacity = '0';
+      item.style.transform = 'translateY(20px)';
+      item.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
+      observer.observe(item);
+    });
+  </script>
+</body>
+</html>
